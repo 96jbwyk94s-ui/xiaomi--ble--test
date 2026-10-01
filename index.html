@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xiaomi BLE Test</title>
+</head>
+
+<body>
+  <h1>Xiaomi BLE Test</h1>
+
+  <button id="connect">Connect to Scooter</button>
+
+  <p id="status">Not connected</p>
+
+  <script>
+    const button = document.getElementById("connect");
+    const status = document.getElementById("status");
+
+    button.onclick = async () => {
+      try {
+        status.textContent = "Searching...";
+
+        if (!navigator.bluetooth) {
+          throw new Error("Web Bluetooth is not available");
+        }
+
+        const device = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true
+        });
+
+        status.textContent =
+          "Found: " + (device.name || "Unknown device");
+
+        const server = await device.gatt.connect();
+
+        status.textContent =
+          "Connected: " + (device.name || "Unknown device");
+
+        console.log(server);
+
+      } catch (error) {
+        status.textContent = "Error: " + error.message;
+        console.log(error);
+      }
+    };
+  </script>
+</body>
+</html>
